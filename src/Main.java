@@ -11,9 +11,7 @@ public class Main {
             //Retirement
             switch (choice) {
                 case "1" -> {
-                    double BMI = bmi();
-                    String category = getBMICategory(BMI);
-                    System.out.printf("Your BMI is %f and your category is %s\n", BMI, category);
+                    System.out.print(bmi());
                     choice = displayMenu();
                 }
                 case "2" -> {
@@ -42,7 +40,7 @@ public class Main {
         return choice;
     }
 
-    public static double bmi() {
+    public static String bmi() {
         System.out.print("Enter height - Feet: ");
         int feet = scanner.nextInt();
         while (feet < 0) {
@@ -64,53 +62,55 @@ public class Main {
             System.out.print("\nEnter weight (pounds): ");
             weight = scanner.nextFloat();
         }
-        return calcBMI(feet, inches, weight);
+        float bmi = calcBMI(feet, inches, weight);
+        String category = getBMICategory(bmi);
+        return "Your BMI is " + bmi + " and your category is " + category + "\n";
     }
 
     public static String retirement() {
         System.out.print("Enter your current age: ");
         int age = scanner.nextInt();
-        while ((age < 0) || (age >= 100)){
+        while ((age < 0) || (age >= 100)) {
             System.out.print("Invalid input! Age cannot be negative or >= 100");
             System.out.print("\nEnter your current age: ");
             age = scanner.nextInt();
         }
         System.out.print("Enter your annual salary: ");
         double salary = scanner.nextDouble();
-        while (salary < 0){
-            System.out.print("Invalid input! Salary cannot be negative");
+        while (salary <= 0) {
+            System.out.print("Invalid input! Salary cannot be negative or 0");
             System.out.print("\nEnter your annual salary: ");
             salary = scanner.nextDouble();
         }
         System.out.print("Enter the percent saved (Ex. if you save 10% enter 0.10): ");
         double percentSave = scanner.nextDouble();
-        while (percentSave < 0){
-            System.out.print("Invalid input! Percent saved cannot be negative");
+        while (percentSave <= 0) {
+            System.out.print("Invalid input! Percent saved cannot be negative or 0");
             System.out.print("\nEnter percent saved (Ex. if you save 10% enter 0.10): ");
             percentSave = scanner.nextDouble();
         }
         System.out.print("Enter your desired retirement savings goal: ");
         double savingsGoal = scanner.nextDouble();
-        while (savingsGoal < 0){
+        while (savingsGoal < 0) {
             System.out.print("Invalid input! Savings goal cannot be negative");
             System.out.print("\nEnter your desired retirement savings goal: ");
             savingsGoal = scanner.nextDouble();
         }
         int ageWhenMet = ageWhenMet(age, salary, percentSave, savingsGoal);
         boolean isGoalMet = isGoalMet(ageWhenMet);
-        if (isGoalMet){
+        if (isGoalMet) {
             return "Goal is met at age " + ageWhenMet;
-        }else{
+        } else {
             return "Goal is not met! Your age when met = " + ageWhenMet;
         }
     }
 
-    public static double calcBMI(int feet, int inches, float weight) {
+    public static float calcBMI(int feet, int inches, float weight) {
         int totalInches = (feet * 12) + inches;
         double convertedWeight = weight * 0.45;
         double convertedHeight = totalInches * 0.025;
         double convHeightSqr = convertedHeight * convertedHeight;
-        return convertedWeight / convHeightSqr;
+        return (float) (convertedWeight / convHeightSqr);
     }
 
     public static String getBMICategory(double BMI) {
@@ -127,21 +127,21 @@ public class Main {
         return category;
     }
 
-    public static double calcSavingsPerYr(double salary, double percentSave) {
-        return ((salary * percentSave) * 1.35);
+    public static float calcSavingsPerYr(double salary, double percentSave) {
+        return (float) ((salary * percentSave) * 1.35);
     }
 
-    public static double yrsTillGoal(double savingsGoal, double savingsPerYr){
-        return Math.ceil(savingsGoal/savingsPerYr);
+    public static double yrsTillGoal(double savingsGoal, double savingsPerYr) {
+        return Math.ceil(savingsGoal / savingsPerYr);
     }
 
-    public static int ageWhenMet(int age, double salary, double percentSave, double savingsGoal){
+    public static int ageWhenMet(int age, double salary, double percentSave, double savingsGoal) {
         double savingsPerYr = calcSavingsPerYr(salary, percentSave);
         double yrsTillGoal = yrsTillGoal(savingsGoal, savingsPerYr);
         return (int) (age + yrsTillGoal);
     }
 
-    public static boolean isGoalMet(int ageWhenMet){
+    public static boolean isGoalMet(int ageWhenMet) {
         return ageWhenMet < 100;
     }
 }
